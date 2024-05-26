@@ -3,10 +3,15 @@ package com.example.acreditads2023;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+
 public class Evento_activity extends AppCompatActivity {
     private EditText edtTituloEvento;
     private EditText edtAutorEvento;
@@ -49,6 +54,23 @@ public class Evento_activity extends AppCompatActivity {
 
                 EventoDAO eDAO = new EventoDAO(db);
                 eDAO.salvar(e);
+
+                // Google Sheets URL
+                String urlSheets = "https://script.google.com/macros/s/AKfycbzi4Hf_7h7zmVJ6Kt3XFVH2prtuOsOxeM9DfSCJtjPZnB29hEPgnz8TSgOWdIs8ygA/exec?action=evento&tituloEvento=" +
+                        edtTituloEvento.getText().toString() + "&autorEvento=" + edtAutorEvento.getText().toString() +
+                        "&tipoEvento=" + edtTipoEvento.getText().toString() + "&FechaHoraEvento=" + edtFechaHoraEvento.getText().toString();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, urlSheets, new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Log.i("Response", s);
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(com.android.volley.VolleyError error) {
+                        Log.e("Error", error.toString());
+                    }
+                });
             }
         });
 
